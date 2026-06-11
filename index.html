@@ -354,6 +354,145 @@
   }
   #logout-btn:hover { background: rgba(26,26,46,0.95); color: white; }
   #logout-btn:active { transform: scale(0.97); }
+
+  /* ── Booking card links ── */
+  .booking-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .booking-links a {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    background: #f0eeff;
+    color: #5b52e8;
+    border: 1px solid #d8d0ff;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 28px;
+    line-height: 20px;
+  }
+  .booking-links a:hover { background: #5b52e8; color: white; border-color: #5b52e8; }
+  .booking-card.urgent .booking-links a { background: #fff0f0; color: #c0000a; border-color: #ffd0d0; }
+  .booking-card.urgent .booking-links a:hover { background: #c0000a; color: white; border-color: #c0000a; }
+  .booking-card.moderate .booking-links a { background: #fffbf0; color: #b45309; border-color: #fde68a; }
+  .booking-card.moderate .booking-links a:hover { background: #b45309; color: white; border-color: #b45309; }
+
+
+  /* ── August Stopover Section ── */
+  .stopover-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 36px 0 20px;
+  }
+  .stopover-divider-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #e17055, transparent);
+    border-radius: 2px;
+  }
+  .stopover-divider-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #e17055;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .aug-context-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #fff5f2, #fff8f5);
+    border-radius: 12px;
+    border: 1px solid #ffd5c8;
+  }
+  .aug-context-item {
+    font-size: 11px;
+    font-weight: 600;
+    color: #a0440a;
+    background: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #ffd5c8;
+    white-space: nowrap;
+  }
+  .aug-panel { display: none; }
+  .aug-panel.active { display: block; }
+  #aug-tabs .tab-btn.active {
+    background: #e17055;
+    border-color: #e17055;
+  }
+  #aug-tabs .tab-btn:hover:not(.active) {
+    border-color: #e17055;
+    color: #e17055;
+  }
+  /* Draft banner */
+  .draft-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fffbf0;
+    border: 1.5px dashed #fbbf24;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #7a5500;
+    line-height: 1.5;
+  }
+  .draft-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .draft-banner strong { color: #5a3e00; }
+
+
+  /* ── Stopover Switcher ── */
+  .stopover-switcher {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    background: white;
+    padding: 6px;
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  }
+  .stopover-switcher-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #999;
+    font-family: inherit;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 48px;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .stopover-switcher-btn.active {
+    background: #5b52e8;
+    color: white;
+    box-shadow: 0 2px 8px rgba(91,82,232,0.3);
+  }
+  .stopover-switcher-btn.august.active {
+    background: #e17055;
+    box-shadow: 0 2px 8px rgba(225,112,85,0.3);
+  }
+  .stopover-switcher-btn:hover:not(.active) { color: #5b52e8; background: #f0eeff; }
+  .stopover-switcher-btn.august:hover:not(.active) { color: #e17055; background: #fff5f2; }
+
 </style>
 </head>
 <body>
@@ -373,6 +512,12 @@
 <div id="app-content">
 <button id="logout-btn">🔒 Lock</button>
 
+<div class="stopover-switcher">
+  <button class="stopover-switcher-btn active" data-stopover="july">🗼 July Stopover<br><span style="font-size:11px;font-weight:600;opacity:0.8;">Jul 20–23 · Tokyo</span></button>
+  <button class="stopover-switcher-btn august" data-stopover="august">🌿 August Stopover<br><span style="font-size:11px;font-weight:600;opacity:0.8;">Aug 1–5 · Tokyo + Kansai</span></button>
+</div>
+
+<div id="july-section">
 <div class="trip-header">
   <h1>🗼 Tokyo July Stopover — Matthew & Keii</h1>
   <p>Kimpton Shinjuku Tokyo · July 20–23, 2026 · Shopping-focused stopover</p>
@@ -384,11 +529,11 @@
   </div>
 </div>
 
-<div class="day-tabs">
-  <button class="tab-btn active" data-day="d0">Jul 20 · Arrival</button>
-  <button class="tab-btn" data-day="d1">Jul 21 · Yaesu + Shibuya</button>
-  <button class="tab-btn" data-day="d2">Jul 22 · Shimokitazawa + Aoyama</button>
-  <button class="tab-btn" data-day="d3">Jul 23 · Departure</button>
+<div class="day-tabs" id="july-tabs">
+  <button class="july-tab-btn tab-btn active" data-day="d0">Jul 20 · Arrival</button>
+  <button class="july-tab-btn tab-btn" data-day="d1">Jul 21 · Yaesu + Shibuya</button>
+  <button class="july-tab-btn tab-btn" data-day="d2">Jul 22 · Shimokitazawa + Aoyama</button>
+  <button class="july-tab-btn tab-btn" data-day="d3">Jul 23 · Departure</button>
 </div>
 
 <!-- ====== DAY 0 ====== -->
@@ -777,110 +922,879 @@
 <!-- BOOKINGS SECTION -->
 <div class="section-label">⚡ Time-Sensitive Bookings — July Stopover</div>
 <div class="bookings-grid">
+
   <div class="booking-card urgent">
-    <div class="booking-urgency">🔴 Book July 7 · Midnight JST</div>
+    <div class="booking-urgency">🔴 Book July 7 · Midnight JST (July 6, 10AM LA)</div>
     <div class="booking-title">Shibuya Sky — Sunset Slot Jul 21</div>
-    <div class="booking-detail">6:15–6:30PM entry. Sunset ≈6:55PM. Tickets via Klook or KKday. Set alarm: July 6, 10AM Los Angeles time. Have account + payment ready. Sunset slots sell out in under 2 minutes.</div>
+    <div class="booking-detail">
+      6:15–6:30PM entry. Sunset ≈6:55PM. Sunset slots sell out in under 2 minutes. For sunset specifically, KKday and Trip.com open at midnight JST — Klook sometimes opens slightly later. Have your account and payment saved before midnight.
+      <div class="booking-links">
+        <a href="https://www.kkday.com/en/product/133300-shibuya-sky-observatory-e-ticket-tokyo" target="_blank" rel="noopener">KKday ↗</a>
+        <a href="https://www.klook.com/en-US/activity/70672-shibuya-sky-tokyo/" target="_blank" rel="noopener">Klook ↗</a>
+        <a href="https://sky.shibuya.city/en/" target="_blank" rel="noopener">Official Site ↗</a>
+      </div>
+    </div>
   </div>
+
   <div class="booking-card urgent">
     <div class="booking-urgency">🔴 Book Now</div>
     <div class="booking-title">Sakurai Tea Experience — Jul 22 ~3:30PM</div>
-    <div class="booking-detail">Only 8 counter seats. Book directly at sakurai-tea.jp/en. Tea course ¥5,500/person (~$34). Confirm availability for a weekday afternoon slot — these book 1–4 weeks out.</div>
+    <div class="booking-detail">
+      Only 8 counter seats. Tea course ¥5,500/person (~$34). Book via TableCheck (easiest, instant confirmation) or email reservation@sakurai-tea.jp. Weekday afternoon slots book 1–4 weeks out.
+      <div class="booking-links">
+        <a href="https://www.tablecheck.com/en/sakurai-tea/reserve" target="_blank" rel="noopener">TableCheck ↗</a>
+        <a href="https://sakurai-tea.jp/en" target="_blank" rel="noopener">Official Site ↗</a>
+      </div>
+    </div>
   </div>
+
   <div class="booking-card urgent">
     <div class="booking-urgency">🔴 Book 4–6 Weeks Ahead</div>
-    <div class="booking-title">Yukata Rental — Jul 22 Morning Asakusa</div>
-    <div class="booking-detail">VASARA (vasara.jp) or Yae (yae-japan.com/en). Summer slots + photography packages fill fast. Request next-day return plan. Keii: photoshoot + rickshaw package at Yae is the premium experience.</div>
+    <div class="booking-title">Yukata Rental — Jul 22 Morning · Asakusa</div>
+    <div class="booking-detail">
+      Yae is the premium pick — photoshoot + rickshaw package, English staff, all-inclusive. VASARA is the large-chain backup with 8 Tokyo locations. Request next-day return plan. Summer festival slots fill fast.
+      <div class="booking-links">
+        <a href="https://yae-japan.com/en/reserve/" target="_blank" rel="noopener">Yae (Direct) ↗</a>
+        <a href="https://www.klook.com/en-US/activity/13746-kimono-rental-experience-asakusa/" target="_blank" rel="noopener">Yae on Klook ↗</a>
+        <a href="https://en.vasara-h.co.jp/" target="_blank" rel="noopener">VASARA ↗</a>
+      </div>
+    </div>
   </div>
+
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book Now · Open Mid-June</div>
+    <div class="booking-title">Edogawa Fireworks — Reserved Seats · Aug 1</div>
+    <div class="booking-detail">
+      7:15–8:20PM, Shinozaki Park area. Reserved seats from ¥5,000/person. Foreign credit cards accepted on eplus.jp and pia.jp — convenience store pickup at Lawson/FamilyMart is the most reliable collection method.
+      <div class="booking-links">
+        <a href="https://eplus.jp" target="_blank" rel="noopener">eplus.jp ↗</a>
+        <a href="https://w.pia.jp" target="_blank" rel="noopener">pia.jp ↗</a>
+        <a href="https://tokyocheapo.com/events/edogawa-fireworks-festival/" target="_blank" rel="noopener">Tokyo Cheapo Guide ↗</a>
+      </div>
+    </div>
+  </div>
+
   <div class="booking-card moderate">
     <div class="booking-urgency mod">🟡 Book 2–3 Weeks Ahead</div>
     <div class="booking-title">Izakaya Vin — Dinner Jul 21 (~8:30PM)</div>
-    <div class="booking-detail">Small Shibuya wine bar. Book via Google Maps or direct. Natural wine list, bistro food, foreigner-friendly neighborhood. Walking distance from Shibuya Sky exit.</div>
+    <div class="booking-detail">
+      Small Shibuya wine bar, natural wine focus, walking distance from Shibuya Sky. Book via Google Maps or Tabelog. Small venue — don't leave it to the day.
+      <div class="booking-links">
+        <a href="https://www.google.com/maps/search/Izakaya+Vin+Shibuya+Tokyo" target="_blank" rel="noopener">Google Maps ↗</a>
+        <a href="https://tabelog.com/en/tokyo/A1303/A130301/13167823/" target="_blank" rel="noopener">Tabelog ↗</a>
+      </div>
+    </div>
   </div>
+
   <div class="booking-card moderate">
     <div class="booking-urgency mod">🟡 Send This Week</div>
-    <div class="booking-title">Kimpton Concierge Email</div>
-    <div class="booking-detail">Use the drafted email. Cover: Shibuya Sky tickets, luggage forward from Narita on arrival, restaurant recs, luggage forward to Narita on departure. Mention Maa-Lai + Platinum Elite.</div>
+    <div class="booking-title">Kimpton Shinjuku Concierge Email</div>
+    <div class="booking-detail">
+      Cover: Shibuya Sky tickets, luggage forward from HND on arrival, restaurant recs, luggage forward to HND on departure. Mention Maa-Lai stay + IHG Platinum Elite. Use the drafted email template.
+      <div class="booking-links">
+        <a href="https://www.kimptonshinjuku.com/contact-us/" target="_blank" rel="noopener">Contact Form ↗</a>
+        <a href="https://www.ihg.com/kimptonhotels/hotels/us/en/tokyo/tyokj/hoteldetail" target="_blank" rel="noopener">IHG Profile ↗</a>
+      </div>
+    </div>
   </div>
+
   <div class="booking-card moderate">
     <div class="booking-urgency mod">🟡 Do Today</div>
     <div class="booking-title">Activate Hilton Gold via Amex Platinum</div>
-    <div class="booking-detail">Log in to Amex account → Benefits → Hilton Honors Gold. Must enroll before booking DoubleTree Ariake for August. Takes effect immediately.</div>
+    <div class="booking-detail">
+      Required before booking DoubleTree Ariake for August. Log in to Amex → Benefits → Hilton Honors Gold → Enroll. Takes effect immediately.
+      <div class="booking-links">
+        <a href="https://global.americanexpress.com/benefits" target="_blank" rel="noopener">Amex Benefits ↗</a>
+        <a href="https://www.hilton.com/en/hotels/tyoardi-doubletree-tokyo-ariake/" target="_blank" rel="noopener">DoubleTree Ariake ↗</a>
+      </div>
+    </div>
   </div>
+
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Book Soon</div>
+    <div class="booking-title">Onitsuka Tiger NIPPON MADE — Stock Check</div>
+    <div class="booking-detail">
+      Call ahead Jul 21 morning to confirm target styles in stock. Store phone: 03-6262-7126. Opens 11AM. Browse NIPPON MADE collection online first and prepare a shortlist.
+      <div class="booking-links">
+        <a href="https://www.onitsukatiger.com/en-en/nippon-made" target="_blank" rel="noopener">NIPPON MADE Collection ↗</a>
+        <a href="https://www.onitsukatiger.com/en-en/store-locator" target="_blank" rel="noopener">Store Info ↗</a>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  
-  // ── Login Gate Logic ──
-  // In-memory only — password forgotten on every page refresh or tab close
-  (function () {
-    var PASS = 'japan2026'; // Change this to your chosen password
-    var unlocked = false;
+(function () {
 
-    function unlock() {
-      unlocked = true;
-      document.getElementById('login-gate').style.display = 'none';
-      document.getElementById('app-content').style.display = 'block';
+  // ── LOGIN GATE ────────────────────────────────────────────────
+  var PASS = 'japan2026';
+  var unlocked = false;
+
+  function unlock() {
+    unlocked = true;
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('app-content').style.display = 'block';
+  }
+  function lock() {
+    unlocked = false;
+    document.getElementById('app-content').style.display = 'none';
+    document.getElementById('login-gate').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('pw-input').focus();
+  }
+  lock();
+
+  var loginBtn  = document.getElementById('login-btn');
+  var pwInput   = document.getElementById('pw-input');
+  var loginErr  = document.getElementById('login-error');
+  var logoutBtn = document.getElementById('logout-btn');
+
+  function attempt() {
+    if (pwInput.value === PASS) {
+      unlock();
+    } else {
+      loginErr.style.display = 'block';
+      pwInput.value = '';
+      pwInput.focus();
+      pwInput.style.borderColor = '#ef4444';
+      setTimeout(function () { pwInput.style.borderColor = ''; }, 800);
     }
+  }
+  loginBtn.addEventListener('click', attempt);
+  pwInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(); });
+  if (logoutBtn) logoutBtn.addEventListener('click', lock);
 
-    function lock() {
-      unlocked = false;
-      document.getElementById('app-content').style.display = 'none';
-      document.getElementById('login-gate').style.display = 'flex';
-      document.getElementById('pw-input').value = '';
-      document.getElementById('login-error').style.display = 'none';
-      document.getElementById('pw-input').focus();
-    }
-
-    // Always start locked — no persistence across sessions
-    lock();
-
-    var btn = document.getElementById('login-btn');
-    var inp = document.getElementById('pw-input');
-    var err = document.getElementById('login-error');
-    var logoutBtn = document.getElementById('logout-btn');
-
-    function attempt() {
-      if (inp.value === PASS) {
-        unlock();
-      } else {
-        err.style.display = 'block';
-        inp.value = '';
-        inp.focus();
-        inp.style.borderColor = '#ef4444';
-        setTimeout(function () { inp.style.borderColor = ''; }, 800);
-      }
-    }
-
-    btn.addEventListener('click', attempt);
-    inp.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') attempt();
-    });
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', function () { lock(); });
-    }
-  })();
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var tabs = document.querySelectorAll('.tab-btn');
-    tabs.forEach(function (btn) {
+  // ── STOPOVER SWITCHER (July / August) ────────────────────────
+  function initStopoverSwitcher() {
+    var switchers = document.querySelectorAll('.stopover-switcher-btn');
+    switchers.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var dayId = btn.getAttribute('data-day');
-        document.querySelectorAll('.day-panel').forEach(function (p) {
-          p.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-btn').forEach(function (b) {
-          b.classList.remove('active');
-        });
-        document.getElementById(dayId).classList.add('active');
+        var target = btn.getAttribute('data-stopover');
+        switchers.forEach(function (b) { b.classList.remove('active'); });
+        document.getElementById('july-section').style.display  = (target === 'july')   ? 'block' : 'none';
+        document.getElementById('august-section').style.display = (target === 'august') ? 'block' : 'none';
         btn.classList.add('active');
-        // Scroll to top of content on mobile
-        document.getElementById(dayId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
+  }
+
+  // ── JULY DAY TABS ────────────────────────────────────────────
+  function initJulyTabs() {
+    var tabs = document.querySelectorAll('#july-tabs .july-tab-btn');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-day');
+        document.querySelectorAll('.day-panel').forEach(function (p) { p.classList.remove('active'); });
+        tabs.forEach(function (b) { b.classList.remove('active'); });
+        var panel = document.getElementById(id);
+        if (panel) { panel.classList.add('active'); }
+        btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+  }
+
+  // ── AUGUST DAY TABS ──────────────────────────────────────────
+  function initAugustTabs() {
+    var tabs = document.querySelectorAll('#aug-tabs .aug-tab-btn');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-aug');
+        document.querySelectorAll('.aug-panel').forEach(function (p) { p.classList.remove('active'); });
+        tabs.forEach(function (b) { b.classList.remove('active'); });
+        var panel = document.getElementById(id);
+        if (panel) { panel.classList.add('active'); }
+        btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    initStopoverSwitcher();
+    initJulyTabs();
+    initAugustTabs();
   });
+
+})();
 </script>
 
+
+</div>
+
+<div id="august-section" style="display:none;">
+<!-- ============================================================ -->
+<!-- AUGUST STOPOVER SECTION -->
+<!-- ============================================================ -->
+
+<div class="trip-header" style="background: linear-gradient(135deg, #7b2d1e 0%, #b84a2e 50%, #e17055 100%);">
+  <h1>🌿 Tokyo & Kansai August Stopover — Matthew & Keii</h1>
+  <p>DoubleTree Ariake · Kyoto Ryokan · Aug 1–5, 2026 · Fireworks · Tea · Osaka</p>
+  <div class="trip-meta">
+    <span class="meta-pill">✈ JL78 arrives HND 4:45 AM Aug 1</span>
+    <span class="meta-pill">✈ FJ350 departs NRT Aug 5</span>
+    <span class="meta-pill">5 days · Tokyo + Kyoto + Osaka</span>
+    <span class="meta-pill">🌡 Peak summer · Heat planning required</span>
+  </div>
+</div>
+
+<div class="day-tabs" id="aug-tabs">
+  <button class="aug-tab-btn tab-btn active" data-aug="aug-d0">Aug 1 · Arrival</button>
+  <button class="aug-tab-btn tab-btn" data-aug="aug-d1">Aug 2 · Ryokan</button>
+  <button class="aug-tab-btn tab-btn" data-aug="aug-d2">Aug 3 · Uji + Kibune</button>
+  <button class="aug-tab-btn tab-btn" data-aug="aug-d3">Aug 4 · Osaka</button>
+  <button class="aug-tab-btn tab-btn" data-aug="aug-d4">Aug 5 · Departure</button>
+</div>
+
+<!-- ====== AUG DAY 0 — ARRIVAL ====== -->
+<div class="aug-panel active" id="aug-d0">
+  <div class="day-header">
+    <span class="day-badge" style="background:#e17055;">Sat · Aug 1</span>
+    <span class="day-theme">Arrival · Rest · Edogawa Fireworks</span>
+    <span class="day-note">4:45 AM landing · Yukata · Hanabi</span>
+  </div>
+
+  <div class="alert-box">
+    <strong>⚡ Day Constraints</strong>
+    4:45 AM arrival means you'll be through immigration by 5:30–6 AM at best. Room is guaranteed (Jul 31 booking). Sleep 6–10 AM minimum or the fireworks evening will be miserable. Heat index peaks 2–4 PM — stay indoors. Fireworks 7:15–8:20 PM, yukata required.
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-transit">✈</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">4:45 AM — Haneda Terminal 3</div>
+        <div class="ev-title">Land HND · JL78 from Manila</div>
+        <div class="ev-desc">JAL JGC priority immigration and baggage. At Arrivals, proceed to JAL ABC counter for same-day luggage delivery to DoubleTree Ariake — forward main bags, keep carry-on only. Ariake is 15–20 min from Haneda by Rinkai Line or taxi. At 5:30 AM, taxi is fastest (~¥2,500).</div>
+        <div class="ev-tags">
+          <span class="tag t-green">JAL JGC priority lanes</span>
+          <span class="tag t-yellow">Forward bags via JAL ABC counter</span>
+          <span class="tag t-gray">Taxi to hotel at 5:30 AM — skip train</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🏨</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">~6:00 AM</div>
+        <div class="ev-title">DoubleTree by Hilton Tokyo Ariake — Check In</div>
+        <div class="ev-desc">Room guaranteed — Jul 31 booking. Hilton Gold benefits active: continental breakfast for two included, upgrade request on file. Check in, drop bags, go straight to sleep. Do not try to sightsee. The famous DoubleTree cookie at check-in — eat it in bed.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Room guaranteed · Hilton Gold breakfast</span>
+          <span class="tag t-purple">Book direct on Hilton.com · Gold number attached</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">💤</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">6:00 – 10:30 AM</div>
+        <div class="ev-title">Sleep · Non-Negotiable</div>
+        <div class="ev-desc">4+ hours minimum. Manila → Tokyo overnight flight + the entire Philippines leg behind you. If you skip this, you will not enjoy the fireworks. Set an alarm for 10:30 AM.</div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍳</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">10:30 AM – 12:00 PM</div>
+        <div class="ev-title">Hilton Gold Breakfast — Late Seating</div>
+        <div class="ev-desc">Complimentary for two with Hilton Gold status. Confirm breakfast hours at check-in — most hotels extend to 10:30 or 11 AM on weekends. If breakfast service has ended, the hotel café or a nearby konbini works fine. Ariake has a FamilyMart within 5 min walk.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Complimentary · Hilton Gold</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">🧊</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">12:00 – 3:30 PM</div>
+        <div class="ev-title">Rest + AC · Optional: TeamLab Planets</div>
+        <div class="ev-desc">August heat is brutal — don't go outside midday. If you have energy: TeamLab Planets Toyosu is a 10-min walk from the hotel. Completely air-conditioned, immersive digital art, no outdoor walking. Book in advance if you want to do this — timed entry. Otherwise: hotel pool, room rest, light preparation for the evening.</div>
+        <div class="ev-tags">
+          <span class="tag t-yellow">Stay indoors 12–4 PM · Peak heat</span>
+          <span class="tag t-purple">TeamLab Planets: 10-min walk · Book ahead</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-culture">👘</div>
+      <div class="event-card ec-culture">
+        <div class="ev-time">4:00 – 5:30 PM</div>
+        <div class="ev-title">Yukata Rental — Ginza VASARA or Ariake Area</div>
+        <div class="ev-desc">Second yukata moment of the trip — this time for the fireworks festival. Ginza VASARA is the closest quality option to DoubleTree Ariake (~20 min by Yurikamome). Request a next-day return plan so you don't have to rush back after fireworks. Coordinate pick-up time carefully — you need to be dressed and on the way to Edogawa by 5:30 PM.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Pre-book — fireworks weekend slots fill fast</span>
+          <span class="tag t-purple">Request next-day return plan</span>
+          <span class="tag t-gray">Ginza VASARA: ~20 min from hotel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚇</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">5:30 PM</div>
+        <div class="ev-title">Depart for Edogawa · In Yukata</div>
+        <div class="ev-desc">Edogawa Shinozaki area is ~45–55 min from Ariake. Rinkai Line → Osaki → JR Musashino Line → Shinozaki, or Rinkai → Shimbashi → Toei Shinjuku Line → Shinozaki. Leave early — the area fills up fast after 6 PM and finding your reserved seat takes time. Yatai (food stalls) open along the riverbank — budget time to grab food before the show.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Leave by 5:30 PM — gets crowded fast</span>
+          <span class="tag t-yellow">~50 min transit · Have reserved seat ticket ready</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-view">🎆</div>
+      <div class="event-card ec-view">
+        <div class="ev-time">7:15 – 8:20 PM</div>
+        <div class="ev-title">Edogawa Fireworks Festival — Reserved Seats</div>
+        <div class="ev-desc">1,000 fireworks in the opening five seconds. Eight themed segments synchronized to BGM. The signature Fuji no Daikageki — record-breaking Mt. Fuji firework display. Wearing yukata in a crowd of locals doing the same — this is the most authentic Tokyo summer experience on the trip. Post-show: don't rush. Stations get overwhelmed immediately after. Buy beer from a stall, wait 20–30 min for crowds to thin before heading to the train.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Reserved seats confirmed · In yukata</span>
+          <span class="tag t-yellow">Wait 20–30 min post-show before heading to station</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍜</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">9:30 PM onwards</div>
+        <div class="ev-title">Late Dinner — Ariake / Odaiba Area</div>
+        <div class="ev-desc">By the time you're back at the hotel it'll be 9:30–10 PM. Keep it simple — hotel restaurant if open, FamilyMart bento and convenience store sake, or Odaiba Decks Tokyo Beach food floor (10-min walk, open late). Early night — Shinkansen to Kyoto tomorrow morning.</div>
+        <div class="ev-tags">
+          <span class="tag t-gray">Early night — Shinkansen tomorrow AM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== AUG DAY 1 — RYOKAN ====== -->
+<div class="aug-panel" id="aug-d1">
+  <div class="day-header">
+    <span class="day-badge" style="background:#e17055;">Sun · Aug 2</span>
+    <span class="day-theme">Shinkansen → Kyoto → Ryokan Check-In</span>
+    <span class="day-note">First Kyoto night · Kaiseki dinner · Ryokan experience</span>
+  </div>
+
+  <div class="draft-banner">
+    <span class="draft-icon">📝</span>
+    <span><strong>DRAFT</strong> — Ryokan not yet booked. Recommendations below. Book as soon as possible — Kyoto ryokan in peak August fill 4–8 weeks out.</span>
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-food">☕</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">7:00 – 8:00 AM</div>
+        <div class="ev-title">Early Breakfast · Check Out DoubleTree</div>
+        <div class="ev-desc">Quick Gold breakfast or grab-and-go from FamilyMart. Check out and arrange luggage — forward main bags to your Kyoto hotel via Yamato at the front desk (not the ryokan — ryokans typically can't receive Yamato deliveries as easily). Travel to Kyoto with one bag each.</div>
+        <div class="ev-tags">
+          <span class="tag t-yellow">Forward bags to Kyoto hotel · Not ryokan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚄</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">8:30 – 9:00 AM · Departure</div>
+        <div class="ev-title">Shinkansen Tokyo → Kyoto · Shinagawa Station</div>
+        <div class="ev-desc">Rinkai Line from Ariake → Osaki → Shinagawa (~25 min). Nozomi Shinkansen from Shinagawa to Kyoto: ~2hr 15min. Book reserved seats in advance on the JR app or at the station — window seats on the right side (D/E) for Mt. Fuji views on a clear day. Arrive Kyoto ~11 AM.</div>
+        <div class="ev-tags">
+          <span class="tag t-purple">Book reserved Shinkansen seats in advance</span>
+          <span class="tag t-green">Right side seats (D/E) = Mt. Fuji view</span>
+          <span class="tag t-gray">Shinagawa → Kyoto ~2hr 15min on Nozomi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍱</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">On the Train</div>
+        <div class="ev-title">Ekiben — Shinkansen Bento</div>
+        <div class="ev-desc">Buy an ekiben (station bento) at Shinagawa before boarding — this is one of Japan's great simple pleasures. Premium options: Makunouchi bento (classic), wagyu beef bento, or a seasonal Shinkansen-exclusive box. Eat with canned coffee or green tea from the platform vending machine.</div>
+        <div class="ev-tags"><span class="tag t-green">Buy before boarding at Shinagawa station</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-shop">🛍️</div>
+      <div class="event-card ec-shop">
+        <div class="ev-time">11:30 AM – 2:00 PM</div>
+        <div class="ev-title">Nishiki Market + Gion First Walk</div>
+        <div class="ev-desc">Bags go to storage at Kyoto Station coin lockers. Nishiki Market ("Kyoto's Kitchen") — narrow covered arcade, 400 years of food stalls. Try: yuba (tofu skin), grilled mochi, Kyoto pickles, dashi dashimaki tamago. Then a light walk through Gion — Hanamikoji Street is most atmospheric in the late afternoon. Keep it brief — you have a ryokan evening ahead.</div>
+        <div class="ev-tags">
+          <span class="tag t-yellow">Keep afternoon light — big dinner tonight</span>
+          <span class="tag t-warn">Stay in shade · August Kyoto heat is intense</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-culture">🏯</div>
+      <div class="event-card ec-culture">
+        <div class="ev-time">3:00 PM</div>
+        <div class="ev-title">Ryokan Check-In · Recommended: Gion Yoshi-ima or Ryokan Yachiyo</div>
+        <div class="ev-desc">
+          <strong>Gion Yoshi-ima</strong> — Machiya townhouse ryokan in the heart of Gion. Walking distance to Hanamikoji, Yasaka Shrine, Kiyomizudera. Seasonal Kyoto kaiseki with local produce. Range: ¥25,000–70,000/night including 2 meals (~$156–$438). Book the standard or deluxe room on the lower end for a first-time ryokan.<br><br>
+          <strong>Ryokan Yachiyo</strong> — On the grounds of Nanzenji Temple. More atmospheric for the setting — wake up to temple bells, garden views. Slightly further from Gion action but the environment is extraordinary.<br><br>
+          Both: English-speaking staff, kaiseki dinner included, yukata provided in room, in-room or private bath.
+        </div>
+        <div class="ev-tags">
+          <span class="tag t-red">DRAFT — Book immediately · August fills fast</span>
+          <span class="tag t-yellow">Book direct with ryokan for best rate</span>
+          <span class="tag t-purple">Confirm: English staff · Private bath · Dietary notes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">♨️</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">4:00 – 6:00 PM</div>
+        <div class="ev-title">Ryokan Arrival Ritual · Bath + Yukata</div>
+        <div class="ev-desc">Change into provided ryokan yukata. Use the onsen or private bath — essential after a travel day. Most ryokan have afternoon onsen access before dinner. This is the decompression window — no phones, no plans, just the sound of the garden and a cup of matcha.</div>
+        <div class="ev-tags"><span class="tag t-green">Provided yukata · Onsen/bath available from check-in</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍣</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">6:30 – 8:30 PM</div>
+        <div class="ev-title">Kaiseki Dinner — In-Room or Private Dining</div>
+        <div class="ev-desc">The centerpiece of the ryokan experience. 8–12 courses of seasonal Kyoto cuisine — tofu, yuba, hamo (pike conger eel, Kyoto's summer fish), wagyu, and matcha dessert. Served in your room or a private dining room, in ryokan yukata, with sake or local craft beer. Do not eat a big lunch — you need appetite for this.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Included in ryokan rate · In-room service</span>
+          <span class="tag t-yellow">Note dietary restrictions when booking</span>
+          <span class="tag t-purple">Hamo (pike conger) is the Kyoto summer specialty</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-bar">🌙</div>
+      <div class="event-card ec-bar">
+        <div class="ev-time">9:00 PM onwards</div>
+        <div class="ev-title">Evening in Gion · Optional Night Walk</div>
+        <div class="ev-desc">If staying at Gion Yoshi-ima — a short evening walk through Hanamikoji at night is genuinely beautiful and far less crowded than daytime. Geiko and maiko occasionally visible after dinner hours. Keep it short — breakfast is early at ryokan.</div>
+        <div class="ev-tags"><span class="tag t-gray">Optional · Gion at night is magical</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== AUG DAY 2 — UJI + KIBUNE ====== -->
+<div class="aug-panel" id="aug-d2">
+  <div class="day-header">
+    <span class="day-badge" style="background:#e17055;">Mon · Aug 3</span>
+    <span class="day-theme">Ryokan Breakfast → Uji Tea → Kibune</span>
+    <span class="day-note">Matcha deep-dive · Nagashi somen · Forest escape</span>
+  </div>
+
+  <div class="draft-banner">
+    <span class="draft-icon">📝</span>
+    <span><strong>DRAFT</strong> — Uji tea guide and Kibune/Hirobun not yet booked. Both require advance reservations. Kibune restaurants book out weeks ahead in August.</span>
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-food">🍱</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">7:30 – 8:30 AM</div>
+        <div class="ev-title">Ryokan Breakfast · Check Out</div>
+        <div class="ev-desc">Traditional Japanese breakfast — rice, miso, grilled fish, pickles, tofu, tamagoyaki. Eat everything. Check out and arrange luggage forward to your Aug 3–5 Kyoto hotel via the ryokan front desk. Head to Uji by train — JR Nara Line from Kyoto Station to Uji, ~18 min.</div>
+        <div class="ev-tags">
+          <span class="tag t-yellow">Forward bags to next Kyoto hotel before leaving</span>
+          <span class="tag t-gray">JR Nara Line · Kyoto → Uji · 18 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-matcha">🍵</div>
+      <div class="event-card ec-matcha">
+        <div class="ev-time">9:30 AM – 1:00 PM</div>
+        <div class="ev-title">Uji Tea Deep Dive — Private Guide (Chisato-san / Viator)</div>
+        <div class="ev-desc">This is Matthew's matcha moment. The private farm-to-table Uji tea tour covers: Tsuen Tea (founded 1160, oldest tea house in Japan), Wazuka tea farm visits (the actual growing village — inaccessible without a guide), tea farmers market with 70+ producers, matcha grinding experience at Chazuna, and the history of Japanese tea production. ~3.5 hours. Go with a guide — solo Uji is a nice afternoon, guided Uji is a completely different experience.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">DRAFT — Book via Viator now · Private half-day</span>
+          <span class="tag t-yellow">~$120–150/person · Book well ahead for August</span>
+          <span class="tag t-green">Tsuen Tea + Wazuka farms + Chazuna grinding</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-culture">⛩</div>
+      <div class="event-card ec-culture">
+        <div class="ev-time">1:00 – 2:00 PM</div>
+        <div class="ev-title">Byodoin Temple — Brief Visit</div>
+        <div class="ev-desc">5-min walk from Uji Station. 10-yen coin image. Heian-period Phoenix Hall reflected in the pond. Worth 45 minutes — not the focus, but genuinely beautiful and you're already here. Buy a matcha soft serve from one of the Uji riverbank shops on the way out.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">On the 10-yen coin · 45 min max</span>
+          <span class="tag t-purple">Matcha soft serve on the riverbank after</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚇</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">2:30 PM</div>
+        <div class="ev-title">Transit: Uji → Kibune</div>
+        <div class="ev-desc">Uji → Kyoto (JR Nara Line, 18 min) → Demachiyanagi (Keihan Line) → Kurama Line → Kibuneguchi Station (~50 min total). Short walk or taxi from Kibuneguchi to Kibune. The valley temperature is noticeably cooler than Kyoto — you'll feel it immediately. Arrive by 3:30 PM to catch the riverside atmosphere before dinner crowd peaks.</div>
+        <div class="ev-tags">
+          <span class="tag t-gray">~50 min total · Kurama Eizan Railway</span>
+          <span class="tag t-green">Temperature drops noticeably in the valley</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🎋</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">4:00 – 6:00 PM</div>
+        <div class="ev-title">Kibune · Hirobun — Nagashi Somen</div>
+        <div class="ev-desc">Hirobun's nagashi somen: bamboo flume flowing cold noodles down a channel of mountain water — you catch them with chopsticks as they pass. This is the singular Kibune experience. Waits can be 30–60 min without a reservation — book ahead if possible. Surrounded by the Kibune River gorge, cedar forest canopy, and cool mountain air. After: walk the stone lantern path along the river to Kibune Shrine.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">DRAFT — Reserve ahead · Long waits without booking</span>
+          <span class="tag t-green">Nagashi somen + forest + cool air = best heat escape</span>
+          <span class="tag t-purple">Kibune Shrine walk after dinner</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚇</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">7:00 PM</div>
+        <div class="ev-title">Return to Kyoto · Check In Aug Hotel</div>
+        <div class="ev-desc">Kibuneguchi → Demachiyanagi → Kyoto base hotel. Your main bags are already waiting. This is the first night in your Aug 3–5 Kyoto hotel — the ryokan stay is done. Unpack, decompress. Light evening — tomorrow is the Osaka day trip.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">DRAFT — Kyoto hotel Aug 3–5 not yet selected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== AUG DAY 3 — OSAKA / AONIYOSHI ====== -->
+<div class="aug-panel" id="aug-d3">
+  <div class="day-header">
+    <span class="day-badge" style="background:#e17055;">Tue · Aug 4</span>
+    <span class="day-theme">Aoniyoshi Train → Nara → Osaka Day Trip</span>
+    <span class="day-note">Sightseeing train · Street food · Omakase dinner</span>
+  </div>
+
+  <div class="draft-banner">
+    <span class="draft-icon">📝</span>
+    <span><strong>DRAFT</strong> — Aoniyoshi tickets and omakase reservation not yet booked. Aoniyoshi sells out; book online now. Omakase: 2–4 weeks ahead via Tableall or Omakase Japan.</span>
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-food">☕</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">8:00 – 9:00 AM</div>
+        <div class="ev-title">Breakfast · Kyoto Hotel or Kissaten</div>
+        <div class="ev-desc">Hotel breakfast or a local kissaten (Japanese-style coffee shop) for morning set — toast, egg, small salad, coffee. Kyoto has excellent old-school kissaten. Ask the hotel concierge for a neighborhood recommendation. Leave for Kintetsu Kyoto Station by 9:15 AM.</div>
+        <div class="ev-tags"><span class="tag t-green">Ask hotel concierge for kissaten rec</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚃</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">9:30 AM</div>
+        <div class="ev-title">Aoniyoshi — Kyoto → Nara (Kintetsu Line)</div>
+        <div class="ev-desc">Board Aoniyoshi at Kintetsu-Kyoto Station. Deep indigo and gold interior, panoramic windows, traditional craft details. ~35 min to Kintetsu-Nara. The train runs limited departures — confirm your specific slot when booking. Ticket = limited express ticket (book online now at Kintetsu) + base fare ticket (buy at station on the day). Total cost ~¥1,500/person.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">DRAFT — Book limited express ticket now: tickets.kintetsu.co.jp</span>
+          <span class="tag t-gray">Base fare ticket bought at Kintetsu station on day</span>
+          <span class="tag t-purple">~35 min · Limited departures</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">🦌</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">10:15 – 11:30 AM</div>
+        <div class="ev-title">Nara Stop — Deer Park + Todaiji</div>
+        <div class="ev-desc">Nara deer are genuinely otherworldly — 1,200 free-roaming deer that bow for shika senbei (deer crackers). Todaiji's Great Buddha Hall is one of the largest wooden structures in the world. Keep this to 1–1.5 hours max — Osaka is the main event today. Walk from Kintetsu-Nara Station to Nara Park is ~10 min.</div>
+        <div class="ev-tags">
+          <span class="tag t-yellow">Keep to 1–1.5 hrs · Osaka is the main event</span>
+          <span class="tag t-green">Deer crackers ¥200 · Buy from vendors near park entrance</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚃</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">11:45 AM</div>
+        <div class="ev-title">Aoniyoshi — Nara → Osaka (Kintetsu Namba)</div>
+        <div class="ev-desc">Continue on Aoniyoshi from Kintetsu-Nara to Osaka Namba (~40 min). Arrive Osaka ~12:30 PM. The Namba/Dotonbori area is a 10-min walk from Kintetsu-Namba Station.</div>
+        <div class="ev-tags"><span class="tag t-gray">~40 min · Arrive Osaka Namba ~12:30 PM</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🦑</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">12:30 – 4:00 PM</div>
+        <div class="ev-title">Osaka Food Crawl — Dotonbori + Kuromon Market</div>
+        <div class="ev-desc">Osaka is about food, full stop. Priority stops: Dotonbori canal (takoyaki from Aizuya, the oldest takoyaki shop — not Gindaco chain), Kuromon Ichiba Market (Osaka's kitchen — grilled wagyu skewers, fresh uni on the spot, giant scallops), Shinsekai for kushikatsu (battered + fried skewers, no double-dipping rule). This is the EAT EAT EAT section of the trip — budget ¥3,000–5,000/person for the crawl.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Takoyaki · Uni · Wagyu · Kushikatsu</span>
+          <span class="tag t-purple">Kuromon Market: best food market in Osaka</span>
+          <span class="tag t-yellow">Stay hydrated · August Osaka heat is intense</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-shop">🛍️</div>
+      <div class="event-card ec-shop">
+        <div class="ev-time">4:00 – 6:00 PM</div>
+        <div class="ev-title">Shinsaibashi + Amerika-mura</div>
+        <div class="ev-desc">Shinsaibashi covered arcade — great for shopping. Amerika-mura (American Village) next to it — vintage clothing, streetwear, independent boutiques. Keii: this is an optional second vintage moment if not fully satisfied after Shimokitazawa in July. Compact and walkable.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Air-conditioned arcade · Good vintage in Amerika-mura</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍣</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">7:00 – 9:00 PM</div>
+        <div class="ev-title">Omakase Dinner — Under $80/head · Kyoto or Osaka</div>
+        <div class="ev-desc">Two options depending on where you want to eat: (A) Stay in Osaka — Sushitetsu (Osaka counter sushi, ~¥8,000/head, exceptional quality, long queues) or a booked omakase via Tableall. (B) Return to Kyoto for dinner — Nishiki Sushi Shin (omakase with wagyu + tempura + miso, ~¥10,000–12,000/head, English staff, warm atmosphere). Kyoto option means a 15-min Shinkansen back before dinner.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">DRAFT — Book via Tableall or Omakase Japan · 2–4 wks ahead</span>
+          <span class="tag t-yellow">Under ¥12,800/head (~$80) · Confirm budget at booking</span>
+          <span class="tag t-purple">Nishiki Sushi Shin (Kyoto) recommended for English + warmth</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚄</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">9:30 PM</div>
+        <div class="ev-title">Return to Kyoto · Last Night</div>
+        <div class="ev-desc">Osaka → Kyoto by Shinkansen (~15 min) or Hankyu Limited Express (~40 min, cheaper). Last night in Kyoto — early start tomorrow for NRT departure.</div>
+        <div class="ev-tags"><span class="tag t-gray">Shinkansen fastest · Last night in Kyoto</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== AUG DAY 4 — DEPARTURE ====== -->
+<div class="aug-panel" id="aug-d4">
+  <div class="day-header">
+    <span class="day-badge" style="background:#e17055;">Wed · Aug 5</span>
+    <span class="day-theme">Kyoto → Tokyo → Narita → Fiji</span>
+    <span class="day-note">FJ350 NRT → NAN · Long travel day</span>
+  </div>
+
+  <div class="alert-box">
+    <strong>⚠ Critical Logistics Day</strong>
+    Kyoto → Narita is a long transit — factor in Shinkansen to Tokyo (~2hr 15min), airport transfer (~90 min), and a 3-hour international check-in window. FJ350 departure time needs to drive your entire morning. Confirm the exact FJ350 NRT departure time and work backwards.
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-warn">⚠</div>
+      <div class="event-card ec-warn">
+        <div class="ev-time">Night Before (Aug 4 evening)</div>
+        <div class="ev-title">Forward Bags to Narita via Yamato — Do This Tonight</div>
+        <div class="ev-desc">Drop bags at the Kyoto hotel front desk tonight (Aug 4 evening) for Yamato forwarding to Narita Airport. Bags need at minimum 1 full day — dropping Aug 4 evening for Aug 5 pickup at Narita is tight. Confirm with the hotel whether this is feasible or whether you needed to drop by Aug 3. If too tight, check bags at Kyoto Station's own Yamato counter. Travel Aug 5 with carry-on only.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Forward bags tonight · Confirm timeline with hotel</span>
+          <span class="tag t-yellow">Fallback: Kyoto Station Yamato counter</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">☕</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">Early AM</div>
+        <div class="ev-title">Final Kyoto Breakfast · Check Out</div>
+        <div class="ev-desc">One last matcha — Kyoto has exceptional standalone matcha cafes near Kyoto Station (Itoh Kyuemon is the benchmark, 5-min walk from the station). Or hotel breakfast. Check out and head to Kyoto Station with time to spare.</div>
+        <div class="ev-tags"><span class="tag t-green">Itoh Kyuemon near Kyoto Station · Last matcha</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚄</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">TBD — Based on FJ350 Departure</div>
+        <div class="ev-title">Shinkansen Kyoto → Tokyo Station</div>
+        <div class="ev-desc">Nozomi from Kyoto to Tokyo Station: ~2hr 10min. From Tokyo Station, Narita Express (N'EX) to Narita Terminal 1: ~55 min. Total Kyoto to Narita check-in desk: ~3hr 30min minimum. Add buffer — allow 4 hours door-to-gate. Work backwards from FJ350 departure to set your Shinkansen departure time.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Confirm FJ350 NRT departure time · Build backwards</span>
+          <span class="tag t-yellow">Kyoto → Narita minimum 3.5hr · Allow 4hr</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">✈</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">At Narita</div>
+        <div class="ev-title">Narita Airport · Fiji Airways Check-In</div>
+        <div class="ev-desc">Fiji Airways (FJ) operates from Narita Terminal 1. Collect forwarded bags at the Yamato counter in the Arrivals/Departures hall. Check in with 3 bags × 30kg each (BIZ VALUE allowance). Fiji Airways Premier Lounge access with business class ticket. Use the lounge for the pre-departure wait — it'll be a long travel day.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">3 bags × 30kg each — BIZ VALUE allowance</span>
+          <span class="tag t-purple">Fiji Airways Premier Lounge · Terminal 1</span>
+          <span class="tag t-yellow">Collect Yamato bags at arrivals counter</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">✈</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">FJ350 Departure</div>
+        <div class="ev-title">NRT → NAN · Fiji Airways Business Class</div>
+        <div class="ev-desc">~9hr 10min. Airbus A330 with angled-flat seats (not lie-flat — the lie-flat A350 is on the NAN→LAX leg). Sleep as much as possible. Arrives Nadi ~4:40 AM local time — 17-hour layover begins. The Fiji day-room strategy kicks in.</div>
+        <div class="ev-tags">
+          <span class="tag t-yellow">Angled-flat seats on this leg · Save deep sleep for A350</span>
+          <span class="tag t-green">~9hr 10min · Fiji Airways Business</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUGUST BOOKINGS GRID -->
+<div class="section-label" style="margin-top:8px;">⚡ Time-Sensitive Bookings — August Stopover</div>
+<div class="bookings-grid">
+
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book Now · Open Mid-June</div>
+    <div class="booking-title">Edogawa Fireworks — Reserved Seats · Aug 1</div>
+    <div class="booking-detail">
+      7:15–8:20 PM, Shinozaki Park. Reserved seats from ¥5,000/person. Foreign credit cards accepted. Convenience store pickup at Lawson/FamilyMart recommended.
+      <div class="booking-links">
+        <a href="https://eplus.jp" target="_blank" rel="noopener">eplus.jp ↗</a>
+        <a href="https://w.pia.jp" target="_blank" rel="noopener">pia.jp ↗</a>
+        <a href="https://tokyocheapo.com/events/edogawa-fireworks-festival/" target="_blank" rel="noopener">Info ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book Now · Hilton.com Direct</div>
+    <div class="booking-title">DoubleTree Ariake — Jul 31 Check-In</div>
+    <div class="booking-detail">
+      Book July 31 to guarantee room at 6 AM Aug 1 arrival. Book direct on Hilton.com with Gold number attached for free breakfast + upgrade. ~¥25,000–32,000/night (~$156–$200).
+      <div class="booking-links">
+        <a href="https://www.hilton.com/en/hotels/tyoardi-doubletree-tokyo-ariake/" target="_blank" rel="noopener">Hilton.com ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book Immediately · August Fills Fast</div>
+    <div class="booking-title">Ryokan — Aug 2 Check-In · Kaiseki Included</div>
+    <div class="booking-detail">
+      Recommended: Gion Yoshi-ima (Gion location, machiya style) or Ryokan Yachiyo (Nanzenji grounds). Book direct. Confirm: English staff, kaiseki dinner, private bath, dietary notes. ¥25,000–70,000/night including 2 meals.
+      <div class="booking-links">
+        <a href="https://www.gion-yoshiima.com/en/" target="_blank" rel="noopener">Gion Yoshi-ima ↗</a>
+        <a href="https://www.hiiragiya.co.jp/en/" target="_blank" rel="noopener">Ryokan Yachiyo ↗</a>
+        <a href="https://www.booking.com/searchresults/en-gb.html?ss=Kyoto+ryokan+gion" target="_blank" rel="noopener">Search Booking.com ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book Now</div>
+    <div class="booking-title">Yukata Rental — Aug 1 · Edogawa Fireworks</div>
+    <div class="booking-detail">
+      Ginza VASARA is closest to DoubleTree Ariake. Next-day return plan essential — you'll be back late after fireworks. Book 4–6 weeks ahead. Fireworks weekend slots fill fast.
+      <div class="booking-links">
+        <a href="https://en.vasara-h.co.jp/" target="_blank" rel="noopener">VASARA Direct ↗</a>
+        <a href="https://www.klook.com/en-US/activity/86315-vasara-kimono-rental-tokyo/" target="_blank" rel="noopener">VASARA on Klook ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Book Soon · Viator</div>
+    <div class="booking-title">Uji Private Tea Tour — Aug 3 Morning</div>
+    <div class="booking-detail">
+      Farm-to-table private tour: Tsuen Tea (est. 1160), Wazuka tea farms, Chazuna grinding, 70+ producer farmers market. ~$120–150/person. Half-day. Book via Viator — search "Uji tea farm private tour."
+      <div class="booking-links">
+        <a href="https://www.viator.com/searchResults/all?text=uji+tea+farm+private+tour" target="_blank" rel="noopener">Viator ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Book ASAP · Sells Out</div>
+    <div class="booking-title">Aoniyoshi Train Tickets — Aug 4</div>
+    <div class="booking-detail">
+      Kintetsu sightseeing train. Book limited express ticket online now. Base fare ticket bought at station on day. Route: Kyoto → Nara → Osaka. ~¥1,500/person total. Limited daily departures.
+      <div class="booking-links">
+        <a href="https://tickets.kintetsu.co.jp" target="_blank" rel="noopener">Kintetsu Tickets ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Book 2–4 Weeks Ahead</div>
+    <div class="booking-title">Hirobun Kibune — Nagashi Somen · Aug 3</div>
+    <div class="booking-detail">
+      Flowing bamboo flume noodles, Kibune River gorge. Long waits without reservation. Book via phone or website. August is peak season — reserve as early as possible.
+      <div class="booking-links">
+        <a href="https://www.hirobun.co.jp" target="_blank" rel="noopener">Hirobun Official ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Book 2–4 Weeks Ahead</div>
+    <div class="booking-title">Omakase Dinner — Aug 4 · Under $80/head</div>
+    <div class="booking-detail">
+      Recommended: Nishiki Sushi Shin (Kyoto, English staff, ~¥10,000–12,000/head) or an Osaka counter via Tableall. Book via Tableall or Omakase Japan for English-language reservation support.
+      <div class="booking-links">
+        <a href="https://tableall.com" target="_blank" rel="noopener">Tableall ↗</a>
+        <a href="https://omakasejp.com" target="_blank" rel="noopener">Omakase Japan ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Select Soon</div>
+    <div class="booking-title">Kyoto Hotel — Aug 3–5 (After Ryokan)</div>
+    <div class="booking-detail">
+      Not yet selected. Needs to be Marriott (Gold Elite) or IHG (Platinum Elite) to maximize status benefits. Central Kyoto location preferred — near Gion or Kawaramachi. Suggest: Mitsui Garden Hotel Kyoto Shinmachi Bettei or Hotel Monterey Kyoto.
+      <div class="booking-links">
+        <a href="https://www.marriott.com/search/findHotels.mi?city=Kyoto" target="_blank" rel="noopener">Marriott Kyoto ↗</a>
+        <a href="https://www.ihg.com/hotels/us/en/find-hotels/hotel/list?qDest=Kyoto" target="_blank" rel="noopener">IHG Kyoto ↗</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div>
 </div><!-- end app-content -->
 </body>
 </html>
