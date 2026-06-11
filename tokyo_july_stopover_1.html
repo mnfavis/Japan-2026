@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokyo July Stopover — Matthew & Keii</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f4f8;
+    color: #1a1a2e;
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .trip-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    color: white;
+  }
+  .trip-header h1 { font-size: 22px; font-weight: 800; }
+  .trip-header p { font-size: 13px; opacity: 0.7; margin-top: 5px; }
+  .trip-meta { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .meta-pill {
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+  }
+
+  .day-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    background: #f4f4f8;
+    padding: 12px 0 8px;
+    z-index: 100;
+  }
+  .tab-btn {
+    padding: 11px 18px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    background: white;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 44px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .tab-btn:hover { border-color: #5b52e8; color: #5b52e8; }
+  .tab-btn.active { background: #5b52e8; border-color: #5b52e8; color: white; }
+
+  .day-panel { display: none; }
+  .day-panel.active { display: block; }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #e8e8f0;
+    flex-wrap: wrap;
+  }
+  .day-badge {
+    background: #5b52e8;
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .day-theme { font-size: 16px; font-weight: 700; }
+  .day-note { font-size: 11px; color: #999; font-style: italic; margin-left: auto; }
+
+  .timeline { position: relative; padding-left: 10px; }
+
+  .event {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .event::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 26px;
+    bottom: -14px;
+    width: 2px;
+    background: #e8e8f0;
+    z-index: 0;
+  }
+  .event:last-child::before { display: none; }
+
+  .dot-wrap {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    position: relative;
+    z-index: 1;
+    margin-top: 10px;
+  }
+  .d-transit { background: #5b52e8; color: white; }
+  .d-food    { background: #e17055; color: white; }
+  .d-matcha  { background: #00b894; color: white; }
+  .d-shop    { background: #fdcb6e; color: #333; }
+  .d-view    { background: #fd79a8; color: white; }
+  .d-bar     { background: #a29bfe; color: white; }
+  .d-rest    { background: #b2bec3; color: white; }
+  .d-culture { background: #00cec9; color: white; }
+  .d-warn    { background: #ff7675; color: white; }
+
+  .event-card {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    border-left: 3px solid #e8e8f0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .ec-transit { border-left-color: #5b52e8; }
+  .ec-food    { border-left-color: #e17055; }
+  .ec-matcha  { border-left-color: #00b894; }
+  .ec-shop    { border-left-color: #fdcb6e; }
+  .ec-view    { border-left-color: #fd79a8; }
+  .ec-bar     { border-left-color: #a29bfe; }
+  .ec-rest    { border-left-color: #b2bec3; background: #f8f8fa; }
+  .ec-culture { border-left-color: #00cec9; }
+  .ec-warn    { border-left-color: #ff7675; background: #fff9f9; }
+
+  .ev-time {
+    font-size: 10px;
+    font-weight: 800;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .ev-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.3;
+  }
+  .ev-desc {
+    font-size: 12px;
+    color: #555;
+    margin-top: 5px;
+    line-height: 1.6;
+  }
+  .ev-tags {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .t-purple { background: rgba(91,82,232,0.1); color: #5b52e8; }
+  .t-green  { background: rgba(0,184,148,0.1); color: #00856a; }
+  .t-orange { background: rgba(225,112,85,0.12); color: #c0400a; }
+  .t-red    { background: rgba(255,118,117,0.15); color: #c0000a; font-weight: 800; }
+  .t-yellow { background: rgba(253,203,110,0.2); color: #9a6a00; }
+  .t-gray   { background: #f0f0f5; color: #777; }
+  .t-pink   { background: rgba(253,121,168,0.15); color: #c0005a; }
+
+  .divider {
+    text-align: center;
+    font-size: 10px;
+    color: #ccc;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 0 10px;
+  }
+
+  .alert-box {
+    background: #fffbf0;
+    border: 1.5px solid #ffd166;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #7a5500;
+    line-height: 1.6;
+  }
+  .alert-box strong { color: #5a3e00; display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .bookings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .booking-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    border-top: 3px solid #5b52e8;
+  }
+  .booking-card.urgent { border-top-color: #ff7675; }
+  .booking-card.moderate { border-top-color: #fdcb6e; }
+  .booking-title { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+  .booking-detail { font-size: 11.5px; color: #666; line-height: 1.5; }
+  .booking-urgency {
+    font-size: 10px;
+    font-weight: 800;
+    color: #ff7675;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .booking-urgency.mod { color: #f0a500; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #5b52e8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 24px 0 12px;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 16px; }
+    .bookings-grid { grid-template-columns: 1fr; }
+    .day-note { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="trip-header">
+  <h1>🗼 Tokyo July Stopover — Matthew & Keii</h1>
+  <p>Kimpton Shinjuku Tokyo · July 20–23, 2026 · Shopping-focused stopover</p>
+  <div class="trip-meta">
+    <span class="meta-pill">✈ JL15 arrives Jul 20 (HND)</span>
+    <span class="meta-pill">✈ PR423 departs Jul 23 (HND→MNL)</span>
+    <span class="meta-pill">3 nights · Kimpton Shinjuku</span>
+    <span class="meta-pill">🌡 Peak summer — heat planning required</span>
+  </div>
+</div>
+
+<div class="day-tabs">
+  <button class="tab-btn active" data-day="d0">Jul 20 · Arrival</button>
+  <button class="tab-btn" data-day="d1">Jul 21 · Yaesu + Shibuya</button>
+  <button class="tab-btn" data-day="d2">Jul 22 · Shimokitazawa + Aoyama</button>
+  <button class="tab-btn" data-day="d3">Jul 23 · Departure</button>
+</div>
+
+<!-- ====== DAY 0 ====== -->
+<div class="day-panel active" id="d0">
+  <div class="day-header">
+    <span class="day-badge">Mon · Jul 20</span>
+    <span class="day-theme">Arrival Day — Land, Rest, Reorient</span>
+    <span class="day-note">Jet lag management · No major commitments</span>
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-transit">✈</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">Morning — Haneda Arrival</div>
+        <div class="ev-title">Land at HND · JAL JGC Priority Immigration</div>
+        <div class="ev-desc">JAL JGC priority baggage lanes. After clearing customs, go to the JAL ABC counter in Arrivals — arrange same-day luggage delivery to Kimpton Shinjuku for main bags. Travel to hotel with carry-on only. Haneda → Shinjuku via Keikyu Line → Toei Shinjuku Line, ~45 min, ¥630.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Bags forwarded to Kimpton</span>
+          <span class="tag t-yellow">Allow 90 min to clear + arrange</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🏨</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">Mid-Morning — Check-In</div>
+        <div class="ev-title">Kimpton Shinjuku — Arrival & Room Request</div>
+        <div class="ev-desc">Check-in from 3PM but front desk will store bags and issue key early if available. Mention IHG Platinum Elite, previous Maa-Lai stay, and "arriving from LAX" — warm framing for an early-room request. Request: high floor, city-facing, quiet side of building.</div>
+        <div class="ev-tags">
+          <span class="tag t-purple">Mention Maa-Lai stay</span>
+          <span class="tag t-purple">IHG Platinum Elite</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">💤</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">11AM – 2PM</div>
+        <div class="ev-title">Rest · Decompress · Do Not Sightsee</div>
+        <div class="ev-desc">12–14hr red-eye. Use the hotel lobby, Jones Café, or room to decompress. Do not try to force a sightseeing itinerary on arrival day — you'll regret it on Day 1. Save energy for the Kimpton Social Hour this evening.</div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-matcha">🍵</div>
+      <div class="event-card ec-matcha">
+        <div class="ev-time">2 – 3:30PM</div>
+        <div class="ev-title">The Jones Café — First Matcha & Slow Start</div>
+        <div class="ev-desc">Ground-floor café, NYC vibe. Ask the barista specifically about current matcha offerings — Japanese hotel café matcha programs are often exceptional and underrated. Gentle first engagement with the hotel and its staff.</div>
+        <div class="ev-tags"><span class="tag t-green">Matcha priority · Stay cool</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">🚶</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">4 – 6PM</div>
+        <div class="ev-title">Light Shinjuku Reorientation Walk</div>
+        <div class="ev-desc">Low-effort only: Tokyo Metropolitan Government Building (free observation deck, no booking, great city orientation), Omoide Yokocho alley scout. Stay shaded, take AC breaks at any konbini. Do not attempt Shibuya or further neighborhoods today.</div>
+        <div class="ev-tags"><span class="tag t-yellow">Stay in shade · July heat index brutal 2–5PM</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-bar">🥂</div>
+      <div class="event-card ec-bar">
+        <div class="ev-time">6 – 7PM</div>
+        <div class="ev-title">Kimpton Social Hour — Do Not Miss</div>
+        <div class="ev-desc">Complimentary drinks and snacks — Kimpton's brand ritual. Exact time and location: confirm at front desk on arrival. Introduce yourselves to the bar staff by name. This is the Maa-Lai Ruby's Bar equivalent moment, Night 1. The relationship you build here echoes through the stay.</div>
+        <div class="ev-tags"><span class="tag t-green">Free · Brand ritual · First staff contact</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍢</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">7:30 – 9PM</div>
+        <div class="ev-title">Dinner: Omoide Yokocho (Memory Lane)</div>
+        <div class="ev-desc">5-min walk from Kimpton. Tiny yakitori stalls, cold beer, smoke in the air. Point-and-order — no Japanese needed. Classic Tokyo first-night energy. Budget ¥2,000–3,500/person including drinks. Cash preferred. Some stalls are smoky inside.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Foreigner-friendly · Walk from hotel</span>
+          <span class="tag t-gray">Cash preferred</span>
+          <span class="tag t-yellow">Smoky interiors</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-bar">🌃</div>
+      <div class="event-card ec-bar">
+        <div class="ev-time">9 – 10:30PM · Optional</div>
+        <div class="ev-title">86 Rooftop Bar — One Nightcap (If Energy Allows)</div>
+        <div class="ev-desc">Kimpton's rooftop bar: Shinjuku skyline panorama, seasonal tea-infused cocktails. If you have the energy, one round is worth it. Otherwise: early night. Tomorrow is the big day.</div>
+        <div class="ev-tags"><span class="tag t-gray">Optional · Hotel bar · Zero commute</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== DAY 1 ====== -->
+<div class="day-panel" id="d1">
+  <div class="day-header">
+    <span class="day-badge">Tue · Jul 21</span>
+    <span class="day-theme">Yaesu + Vintage + Shibuya Sky</span>
+    <span class="day-note">The full-send day — plan every hour</span>
+  </div>
+
+  <div class="alert-box">
+    <strong>⚡ Day 1 Key Constraints</strong>
+    Shibuya Sky sunset slot (≈6:55PM) is the unmovable anchor. Everything else builds around it. Tsukiji stalls sell out by 10AM — start early. Onitsuka Tiger opens 11AM sharp. Do not skip the 3:30PM AC break or you will be exhausted for Shibuya Sky.
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-food">☕</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">8 – 8:45AM</div>
+        <div class="ev-title">Breakfast: The Jones Café — Quick Fuel</div>
+        <div class="ev-desc">Early start required. Light breakfast at the hotel — espresso, pastry, or grab-and-go. Need to be on the train by 9AM.</div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🐟</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">9 – 10:45AM</div>
+        <div class="ev-title">Tsukiji Outer Market — Second Breakfast</div>
+        <div class="ev-desc">15 min by train (Marunouchi Line → Tsukijishijo). Best stalls sell out by 10AM, so arrive by 9:15AM. Priorities: fresh tamagoyaki, grilled oysters on sticks, uni sashimi cups, Tsukiji Yajima for rice bowls. Eat standing — it's all part of it. This is conveniently on the way to Yaesu (5-min walk from Tsukiji to Midtown Yaesu).</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Arrive by 9:15AM — stalls sell out fast</span>
+          <span class="tag t-green">5-min walk to Onitsuka Tiger</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-shop">👟</div>
+      <div class="event-card ec-shop">
+        <div class="ev-time">11AM – 1PM</div>
+        <div class="ev-title">Onitsuka Tiger NIPPON MADE — Tokyo Midtown Yaesu</div>
+        <div class="ev-desc">Be at the door at 11AM opening. Tuesday morning = least crowded window of the week. Staff speak English and provide full fittings — unhurried, personal service is what sets this store apart from Ginza and Shibuya locations. Keii: review the NIPPON MADE catalog online before arriving and bring a shortlist of target styles and sizes. Store phone: 03-6262-7126 (can call ahead to confirm stock).</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Arrive at 11AM opening</span>
+          <span class="tag t-orange">NIPPON MADE exclusives — not available elsewhere</span>
+          <span class="tag t-purple">Bring size shortlist</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-shop">👜</div>
+      <div class="event-card ec-shop">
+        <div class="ev-time">1:30 – 3:30PM</div>
+        <div class="ev-title">Omotesando / Harajuku — Vintage Bags & Designer Resale</div>
+        <div class="ev-desc">15 min from Yaesu (Tozai Line → Omotesando). Three priority stops within walking distance of each other: (1) Amore on Omotesando backstreets — Chanel specialist, cult following, pink-striped interior. (2) Toro in Harajuku — avant-garde vintage, reworked pieces, Japanese sensibility. (3) Hedy in Daikanyama — curated luxury handbags, understated and excellent value. Coin locker at Omotesando Station for Onitsuka Tiger bags.</div>
+        <div class="ev-tags">
+          <span class="tag t-gray">Amore: 5-1-15 Jingumae</span>
+          <span class="tag t-gray">Hedy: 26-8 Sarugakucho</span>
+          <span class="tag t-yellow">Store coin locker at Omotesando Stn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-rest">🧊</div>
+      <div class="event-card ec-rest">
+        <div class="ev-time">3:30 – 4:30PM · Critical</div>
+        <div class="ev-title">Mandatory AC Break — Omotesando/Aoyama Café</div>
+        <div class="ev-desc">Do not skip this. July 2–4PM is the hottest part of the day. Options: any Aoyama café, Nicolai Bergmann flower café (Omotesando), a convenience store sit-down, or return to the hotel briefly. Rehydrate. Eat something. Rest your feet. You need full energy for Shibuya Sky and the evening.</div>
+        <div class="ev-tags"><span class="tag t-red">Non-negotiable — skip this and the evening suffers</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-view">📸</div>
+      <div class="event-card ec-view">
+        <div class="ev-time">5 – 5:50PM</div>
+        <div class="ev-title">Shibuya Crossing — Street Level Photo Op</div>
+        <div class="ev-desc">10-min walk from Omotesando. Stand in the scramble during the signal change — no special setup needed, just walk in with the crowd. For the overhead shot: 2F Starbucks overlooking the crossing (arrive early, window tables go fast). Same building as Shibuya Sky above you — seamless transition upward.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Free · No booking</span>
+          <span class="tag t-purple">Starbucks 2F = best overhead angle</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-view">🌇</div>
+      <div class="event-card ec-view">
+        <div class="ev-time">6:15 – 8PM</div>
+        <div class="ev-title">Shibuya Sky — Sunset Entry (PRE-BOOKED TIMED SLOT)</div>
+        <div class="ev-desc">Sunset July 21 ≈ 6:55PM. Enter at 6:15–6:30PM for golden hour + city lights transition. Open-air Sky Stage at 229m. Key spot: SKY EDGE for the direct downward scramble-crossing shot. No tripods, no selfie sticks, no bags on deck (lockers available). THE ROOF upgrade (¥5,500–6,500 for 2 pax) adds a sofa seat + 2 drinks — book separately on the official site if interested. Plan for 90 min minimum.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">BOOK July 7 midnight JST — slots vanish in minutes</span>
+          <span class="tag t-orange">Klook or KKday · Timed entry QR code</span>
+          <span class="tag t-green">No time limit once inside</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍷</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">8:30 – 10:30PM</div>
+        <div class="ev-title">Dinner + Wine: Izakaya Vin — Shibuya</div>
+        <div class="ev-desc">Family-owned three-floor wine bar in the heart of Shibuya, walking distance from Shibuya Sky. The whole concept is contrast: casual atmosphere, extraordinary wine. Simple bistro food pairs with a serious natural wine list. Matthew's wine phase: this is the right venue. Reserve ahead — it's a small space and popular.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Reserve ahead — small venue</span>
+          <span class="tag t-green">Natural wine focus · Foreigner-friendly area</span>
+          <span class="tag t-gray">Walk from Shibuya Sky</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== DAY 2 ====== -->
+<div class="day-panel" id="d2">
+  <div class="day-header">
+    <span class="day-badge">Wed · Jul 22</span>
+    <span class="day-theme">Yukata + Vintage + Sakurai Tea + Rooftop</span>
+    <span class="day-note">Cultural morning · Shopping afternoon · Final evening</span>
+  </div>
+
+  <div class="alert-box">
+    <strong>💡 Yukata Timing Decision</strong>
+    Day 21 is too packed for a yukata rental. Day 22 is the right day. Suggested flow: rent yukata in Asakusa at 9AM → wear it through Shimokitazawa for vintage shopping (stunning photos, very on-brand) → return yukata by 2PM before Sakurai Tea. This turns a standalone activity into a full cultural arc for the day.
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-culture">👘</div>
+      <div class="event-card ec-culture">
+        <div class="ev-time">8:30 – 11AM</div>
+        <div class="ev-title">Yukata Rental + Asakusa Morning — VASARA or Yae</div>
+        <div class="ev-desc">20 min from Shinjuku to Asakusa. VASARA has 8 Tokyo locations and full English support — pick up in Asakusa, return anywhere. Yae Kimono specializes in professional hairstyling + photography packages (rickshaw pickup available directly from the shop — stunning for photos). Wear yukata into Asakusa streets around Senso-ji before heading to Shimokitazawa. Keii: this is the photoshoot moment. Request next-day return option so you can keep the yukata for the full day.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">BOOK 4–6 weeks ahead — summer slots fill fast</span>
+          <span class="tag t-green">VASARA: vasara.jp · Yae: yae-japan.com/en</span>
+          <span class="tag t-purple">Next-day return plan recommended</span>
+          <span class="tag t-yellow">Basic yukata ¥3,300–6,000 · Hair + photo pkg ¥8,000–12,000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-shop">👗</div>
+      <div class="event-card ec-shop">
+        <div class="ev-time">11AM – 2PM</div>
+        <div class="ev-title">Shimokitazawa — Vintage Clothing in Yukata</div>
+        <div class="ev-desc">20 min from Asakusa (Tobu → transfer → Odakyu to Shimokita). Tokyo's undisputed vintage capital — 6 shopping streets, 760+ stores. Priority shops: Flamingo (curated American vintage and Japanese streetwear), New York Joe Exchange (quality secondhand, good English), Stick Out Vintage. Wearing yukata here is genuinely special — locals will love it and photos are exceptional. Drop larger bags at coin lockers at Shimokita Station (¥400–600).</div>
+        <div class="ev-tags">
+          <span class="tag t-red">Many shops CASH ONLY — bring yen</span>
+          <span class="tag t-green">Coin lockers at station entrance</span>
+          <span class="tag t-yellow">Most shops open 11AM</span>
+          <span class="tag t-pink">Wearing yukata here = perfect photo moment</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍱</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">2 – 2:45PM</div>
+        <div class="ev-title">Lunch in Shimokitazawa</div>
+        <div class="ev-desc">Excellent local food scene: Nanaya for matcha soft serve (the best in Tokyo), Bear Pond Espresso for specialty coffee, or any of the curry/ramen spots on the back streets. Eat before heading to Aoyama — don't arrive at Sakurai Tea hungry or rushed.</div>
+        <div class="ev-tags"><span class="tag t-green">Nanaya matcha soft serve — priority</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-matcha">🍵</div>
+      <div class="event-card ec-matcha">
+        <div class="ev-time">3:30 – 5:30PM</div>
+        <div class="ev-title">Sakurai Japanese Tea Experience — Spiral Building, Aoyama</div>
+        <div class="ev-desc">5th floor of the Spiral Building, Minami-Aoyama (20 min from Shimokita). Only 8 counter seats. Founder Shinya Sakurai prepares flights of 30+ varieties of Japanese tea — gyokuro, hojicha, matcha, and rare regional teas. Tea courses from ¥5,500/person (~$34). Evening bar program features tea-infused cocktails starting at 6PM. Matthew: this is the serious tea moment of the July trip — not a tourist ceremony but a genuine sensory education. Air-conditioned, intimate, unhurried. 90-min session.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">RESERVATION REQUIRED — book now: sakurai-tea.jp/en</span>
+          <span class="tag t-green">English staff · AC · 8 seats only</span>
+          <span class="tag t-yellow">¥5,500/person (~$34) for tea course</span>
+          <span class="tag t-purple">5F Spiral Building · Opens 11AM</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-shop">🌿</div>
+      <div class="event-card ec-shop">
+        <div class="ev-time">5:30 – 7PM</div>
+        <div class="ev-title">Daikanyama / Nakameguro Canal — Golden Hour Walk</div>
+        <div class="ev-desc">10-min walk from Spiral Building. Nakameguro canal at golden hour is one of Tokyo's best evening walks — boutiques, cafés, tree-lined canal path. Daikanyama T-Site bookstore (iconic architecture). Good for: Hedy vintage bags (26-8 Sarugakucho) if not visited Day 1. Evening temperature drops make this walkable. Keii: casual concept photoshoot opportunity here if wearing yukata (return yukata to store by 5:30PM per standard plan, or use next-day return option to wear it here).</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Evening is cooler — ideal walking hour</span>
+          <span class="tag t-pink">Best golden hour photos of the trip</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">🍖</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">7:30 – 9PM</div>
+        <div class="ev-title">Dinner: Tonkatsu in Shinjuku — Tonchinkan or Katsukura</div>
+        <div class="ev-desc">Back in Shinjuku for the final Tokyo dinner. Tonchinkan: 5-min walk from Kimpton, Nishi-Shinjuku, 2F above street level — home-cooking style, consistently excellent, no reservation needed (small queue). Katsukura: Shinjuku Takashimaya department store — slightly more refined, worth the short queue. Either pairs with cold Japanese beer and serves as a proper sendoff to Tokyo.</div>
+        <div class="ev-tags">
+          <span class="tag t-green">Foreigner-friendly · Near hotel</span>
+          <span class="tag t-gray">Tonchinkan: 5-min walk from Kimpton</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-bar">🌃</div>
+      <div class="event-card ec-bar">
+        <div class="ev-time">9:30 – 11PM</div>
+        <div class="ev-title">86 Rooftop Bar — Final Tokyo Night</div>
+        <div class="ev-desc">Your last night in Tokyo this leg. Kimpton rooftop, Shinjuku panorama. Find the bartender you met at Social Hour on Day 1 — mention you'll be back in August. Order the seasonal cocktail program. Stay for two rounds. This is the Maa-Lai Ruby's Bar moment: tip generously, engage genuinely, say goodbye properly. A note to the bar manager the next morning will be remembered in August.</div>
+        <div class="ev-tags">
+          <span class="tag t-pink">Last Tokyo night — make it memorable</span>
+          <span class="tag t-purple">Mention August return</span>
+          <span class="tag t-green">Seasonal tea-infused cocktails</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== DAY 3 ====== -->
+<div class="day-panel" id="d3">
+  <div class="day-header">
+    <span class="day-badge">Thu · Jul 23</span>
+    <span class="day-theme">Departure → Manila → CDO → Dahilayan</span>
+    <span class="day-note">PR423 HND→MNL · Check-in Pinegrove 3PM</span>
+  </div>
+
+  <div class="timeline">
+    <div class="event">
+      <div class="dot-wrap d-warn">⚠</div>
+      <div class="event-card ec-warn">
+        <div class="ev-time">Tonight (Jul 22 Evening)</div>
+        <div class="ev-title">Arrange Luggage Forward at Front Desk Before Bed</div>
+        <div class="ev-desc">Ask Kimpton concierge to arrange Yamato forwarding tonight (Jul 22) rather than morning of departure. Note: Yamato does not forward directly to the Philippines. Forward luggage to Pinegrove only works if shipped to a Japan address. For Philippines, you will need to check bags at HND on Jul 23. The hotel concierge can advise on Manila / CDO shipping separately if needed. Confirm with concierge what is feasible.</div>
+        <div class="ev-tags"><span class="tag t-red">Yamato cannot forward to Philippines — check bags at airport</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-food">☕</div>
+      <div class="event-card ec-food">
+        <div class="ev-time">8 – 9AM</div>
+        <div class="ev-title">Final Breakfast: The Jones Café</div>
+        <div class="ev-desc">One last matcha. If staff have been particularly helpful — ask for the manager and leave a brief verbal note. This is the Maa-Lai playbook: genuine gratitude, by name, before departure. It seeds the August return beautifully. Consider leaving a handwritten note at the front desk.</div>
+        <div class="ev-tags"><span class="tag t-purple">Leave staff notes · Sets up August return</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">🚇</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">9:30AM</div>
+        <div class="ev-title">Depart Kimpton → Haneda Airport</div>
+        <div class="ev-desc">Keikyu Line from Shinjuku → Haneda Terminal 3. ~45 min journey. Allow 2.5–3 hours before PR423 departure. Philippine Airlines check-in queue at Haneda can be long — arrive with buffer.</div>
+        <div class="ev-tags"><span class="tag t-yellow">Confirm PR423 departure time · Allow 3hr at airport</span></div>
+      </div>
+    </div>
+
+    <div class="event">
+      <div class="dot-wrap d-transit">✈</div>
+      <div class="event-card ec-transit">
+        <div class="ev-time">Flight Day</div>
+        <div class="ev-title">PR423: HND → MNL, then connect to CDO</div>
+        <div class="ev-desc">NAIA Manila domestic connection: allow minimum 3 hours. NAIA has multiple terminals — confirm your domestic CDO flight terminal vs international arrival terminal, and check whether a terminal transfer (bus or taxi) is required. It often is. From CDO Laguindingan Airport → drive to Dahilayan (~1.5–2hr). Check-in at Pinegrove Mountain Lodge at 3PM.</div>
+        <div class="ev-tags">
+          <span class="tag t-red">NAIA terminal transfer — confirm terminals in advance</span>
+          <span class="tag t-orange">Min 3hr Manila layover</span>
+          <span class="tag t-green">Pinegrove check-in: 3PM · 3 nights booked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKINGS SECTION -->
+<div class="section-label">⚡ Time-Sensitive Bookings — July Stopover</div>
+<div class="bookings-grid">
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book July 7 · Midnight JST</div>
+    <div class="booking-title">Shibuya Sky — Sunset Slot Jul 21</div>
+    <div class="booking-detail">6:15–6:30PM entry. Sunset ≈6:55PM. Tickets via Klook or KKday. Set alarm: July 6, 10AM Los Angeles time. Have account + payment ready. Sunset slots sell out in under 2 minutes.</div>
+  </div>
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book Now</div>
+    <div class="booking-title">Sakurai Tea Experience — Jul 22 ~3:30PM</div>
+    <div class="booking-detail">Only 8 counter seats. Book directly at sakurai-tea.jp/en. Tea course ¥5,500/person (~$34). Confirm availability for a weekday afternoon slot — these book 1–4 weeks out.</div>
+  </div>
+  <div class="booking-card urgent">
+    <div class="booking-urgency">🔴 Book 4–6 Weeks Ahead</div>
+    <div class="booking-title">Yukata Rental — Jul 22 Morning Asakusa</div>
+    <div class="booking-detail">VASARA (vasara.jp) or Yae (yae-japan.com/en). Summer slots + photography packages fill fast. Request next-day return plan. Keii: photoshoot + rickshaw package at Yae is the premium experience.</div>
+  </div>
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Book 2–3 Weeks Ahead</div>
+    <div class="booking-title">Izakaya Vin — Dinner Jul 21 (~8:30PM)</div>
+    <div class="booking-detail">Small Shibuya wine bar. Book via Google Maps or direct. Natural wine list, bistro food, foreigner-friendly neighborhood. Walking distance from Shibuya Sky exit.</div>
+  </div>
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Send This Week</div>
+    <div class="booking-title">Kimpton Concierge Email</div>
+    <div class="booking-detail">Use the drafted email. Cover: Shibuya Sky tickets, luggage forward from Narita on arrival, restaurant recs, luggage forward to Narita on departure. Mention Maa-Lai + Platinum Elite.</div>
+  </div>
+  <div class="booking-card moderate">
+    <div class="booking-urgency mod">🟡 Do Today</div>
+    <div class="booking-title">Activate Hilton Gold via Amex Platinum</div>
+    <div class="booking-detail">Log in to Amex account → Benefits → Hilton Honors Gold. Must enroll before booking DoubleTree Ariake for August. Takes effect immediately.</div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var dayId = btn.getAttribute('data-day');
+        document.querySelectorAll('.day-panel').forEach(function (p) {
+          p.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(function (b) {
+          b.classList.remove('active');
+        });
+        document.getElementById(dayId).classList.add('active');
+        btn.classList.add('active');
+        // Scroll to top of content on mobile
+        document.getElementById(dayId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  });
+</script>
+</body>
+</html>
