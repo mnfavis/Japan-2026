@@ -257,9 +257,121 @@
     .bookings-grid { grid-template-columns: 1fr; }
     .day-note { margin-left: 0; width: 100%; }
   }
+
+  /* ── Login Gate ── */
+  #login-gate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 24px;
+    margin: -24px;
+  }
+  #login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 36px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    text-align: center;
+  }
+  .login-emoji { font-size: 44px; margin-bottom: 14px; display: block; }
+  #login-card h2 { font-size: 20px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+  #login-card .login-sub { font-size: 13px; color: #999; margin-bottom: 28px; line-height: 1.5; }
+  #pw-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 20px;
+    font-family: inherit;
+    color: #1a1a2e;
+    background: #f9f9fc;
+    outline: none;
+    -webkit-appearance: none;
+    margin-bottom: 14px;
+    text-align: center;
+    letter-spacing: 4px;
+    display: block;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+  }
+  #pw-input:focus { border-color: #5b52e8; background: white; }
+  #pw-input::placeholder { letter-spacing: 0; font-size: 14px; color: #bbb; }
+  #login-btn {
+    width: 100%;
+    padding: 15px;
+    background: #5b52e8;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 50px;
+    display: block;
+    box-sizing: border-box;
+    transition: background 0.15s;
+  }
+  #login-btn:active { background: #4338ca; }
+  #login-error {
+    display: none;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #ef4444;
+    font-weight: 700;
+  }
+  #app-content { display: none; }
+
+
+  /* ── Logout Button ── */
+  #logout-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(26,26,46,0.85);
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    z-index: 999;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.15s;
+  }
+  #logout-btn:hover { background: rgba(26,26,46,0.95); color: white; }
+  #logout-btn:active { transform: scale(0.97); }
 </style>
 </head>
 <body>
+
+
+<div id="login-gate">
+  <div id="login-card">
+    <span class="login-emoji">🗼</span>
+    <h2>Matthew &amp; Keii · Japan 2026</h2>
+    <p class="login-sub">Enter the trip password to view the itinerary</p>
+    <input type="password" id="pw-input" placeholder="password" autocomplete="current-password" />
+    <button id="login-btn">View Itinerary</button>
+    <div id="login-error">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<div id="app-content">
+<button id="logout-btn">🔒 Lock</button>
 
 <div class="trip-header">
   <h1>🗼 Tokyo July Stopover — Matthew & Keii</h1>
@@ -698,6 +810,57 @@
 </div>
 
 <script>
+  
+  // ── Login Gate Logic ──
+  // In-memory only — password forgotten on every page refresh or tab close
+  (function () {
+    var PASS = 'japan2026'; // Change this to your chosen password
+    var unlocked = false;
+
+    function unlock() {
+      unlocked = true;
+      document.getElementById('login-gate').style.display = 'none';
+      document.getElementById('app-content').style.display = 'block';
+    }
+
+    function lock() {
+      unlocked = false;
+      document.getElementById('app-content').style.display = 'none';
+      document.getElementById('login-gate').style.display = 'flex';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('login-error').style.display = 'none';
+      document.getElementById('pw-input').focus();
+    }
+
+    // Always start locked — no persistence across sessions
+    lock();
+
+    var btn = document.getElementById('login-btn');
+    var inp = document.getElementById('pw-input');
+    var err = document.getElementById('login-error');
+    var logoutBtn = document.getElementById('logout-btn');
+
+    function attempt() {
+      if (inp.value === PASS) {
+        unlock();
+      } else {
+        err.style.display = 'block';
+        inp.value = '';
+        inp.focus();
+        inp.style.borderColor = '#ef4444';
+        setTimeout(function () { inp.style.borderColor = ''; }, 800);
+      }
+    }
+
+    btn.addEventListener('click', attempt);
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') attempt();
+    });
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function () { lock(); });
+    }
+  })();
+
   document.addEventListener('DOMContentLoaded', function () {
     var tabs = document.querySelectorAll('.tab-btn');
     tabs.forEach(function (btn) {
@@ -717,5 +880,7 @@
     });
   });
 </script>
+
+</div><!-- end app-content -->
 </body>
 </html>
